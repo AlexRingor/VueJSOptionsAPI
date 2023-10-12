@@ -11,6 +11,8 @@
             width: 70%;
             margin: 0 auto;
             margin-top: 2em;
+            padding: 1em;
+            background-color: #fcfcf0;
         }
         .strikeout {
             text-decoration: line-through;
@@ -37,6 +39,13 @@
             margin: 1em 0;
         }
 
+        .counter {
+            color: gray;
+            margin: 0;
+            padding: 0;
+            font-size: 11px;
+        }
+
     </style>
 </head>
 <body>
@@ -48,6 +57,7 @@
         </div>
         <div v-if="editing" class="add-item-form">
             <input class="input" @keyup.enter="saveItem" type="text" placeholder="Add an item" v-model="newItem" >
+            <p class="counter">{{ characterCount }}/100</p>
             <input type="checkbox" v-model="newItemHighPriority" value="false">High Priority   
             <button class="btn btn-primary" @click="saveItem" :disabled="newItem.length === 0">Save Item</button> 
         </div> 
@@ -57,7 +67,7 @@
         <p v-if="items.length === 0">No Item, please add a new item</p>
         <ul>
             <li 
-            v-for="item in items" 
+            v-for="item in reversedItems" 
             :key="item.id" 
             :class="{ strikeout: item.purchased, priority: item.highPriority }"
             class="static-class"
@@ -99,7 +109,16 @@
                 togglePurchased(item) {
                     item.purchased = !item.purchased
                 }
-            }
+            },
+            computed: {
+                characterCount() {
+                    return this.newItem.length
+                },
+
+                reversedItems() {
+                    return [...this.items].reverse()
+                }
+             }
         })
         .mount('#shopping-list')
     </script>
