@@ -5,13 +5,45 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Options Api Fundatmentals</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <style>
 
+        #shopping-list {
+            width: 70%;
+            margin: 0 auto;
+            margin-top: 2em;
+        }
+        .strikeout {
+            text-decoration: line-through;
+            color: gray;
+        }
+
+        .priority {
+            color: orange;
+        }
+
+        .static-class:hover {
+            cursor: pointer; 
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .add-item-form {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 1em 0;
+        }
+
+    </style>
 </head>
 <body>
     <div id="shopping-list">
         <div class="header">
-            <h1>{{header ? header : 'We lcome'}}</h1>
-            <button @click="doEdit(false)" v-if="editing" class="btn btn-warning">Cancel</button>
+            <h2>{{header ? header : 'We lcome'}}</h1>
+            <button @click="doEdit(false)" v-if="editing" class="btn btn-danger">Cancel</button>
             <button @click="doEdit(true)"v-else class="btn btn-primary">Add Item</button>
         </div>
         <div v-if="editing" class="add-item-form">
@@ -20,11 +52,18 @@
             <button class="btn btn-primary" @click="saveItem" :disabled="newItem.length === 0">Save Item</button> 
         </div> 
 
-        <a v-bind:href="newItem">Dynaimc Link</a>
+        <!-- <a v-bind:href="newItem">Dynaimc Link</a> -->
 
         <p v-if="items.length === 0">No Item, please add a new item</p>
         <ul>
-            <li v-for="item in items" :key="item.id"> {{item.label}} {{item.priority}}</li>
+            <li 
+            v-for="item in items" 
+            :key="item.id" 
+            :class="{ strikeout: item.purchased, priority: item.highPriority }"
+            class="static-class"
+            @click="togglePurchased(item)"> 
+                {{item.label}}
+            </li>
         </ul>
     </div>
 
@@ -38,22 +77,27 @@
                     newItemHighPriority: false,
                     editing: false,
                     items: [
-                        // { id: 1, label: "Soda"},
-                        // { id: 2, label: "Beer"},
-                        // { id: 3, label: "Wine"}
+                        { id: 1, label: "Soda", purchased: false, highPriority: true},
+                        { id: 2, label: "Beer", purchased: true, highPriority: false},
+                        { id: 3, label: "Wine", purchase: true, highPriority: false}
                 ]
                 }
             },
             methods: {
                 saveItem() {
                     if (this.newItem) {
-                        this.items.push({id:this.items.length +1 , label: this.newItem, priority: this.newItemHighPriority})
+                        this.items.push({id:this.items.length +1 , label: this.newItem, highPriority: this.newItemHighPriority})
                         this.newItem = ''
                         this.newItemHighPriority = false
                     }
                 },
+
                 doEdit(editing) {
                     this.editing = editing
+                },
+
+                togglePurchased(item) {
+                    item.purchased = !item.purchased
                 }
             }
         })
