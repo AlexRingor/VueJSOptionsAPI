@@ -9,13 +9,22 @@
 </head>
 <body>
     <div id="shopping-list">
-        <h1>{{header ? header : 'Welcome'}}</h1>
-        <input @keyup.enter="items.push({id:items.length +1 , label: newItem})" type="text" placeholder="Add an item" v-model="newItem">
-        <button class="btn btn-primary" @click="items.push({id:items.length +1 , label: newItem})">Save Item</button>
-        <input type="checkbox" v-model="newItemHighPriority">High Priority    
+        <div class="header">
+            <h1>{{header ? header : 'We lcome'}}</h1>
+            <button @click="doEdit(false)" v-if="editing" class="btn btn-warning">Cancel</button>
+            <button @click="doEdit(true)"v-else class="btn btn-primary">Add Item</button>
+        </div>
+        <div v-if="editing" class="add-item-form">
+            <input class="input" @keyup.enter="saveItem" type="text" placeholder="Add an item" v-model="newItem" >
+            <input type="checkbox" v-model="newItemHighPriority" value="false">High Priority   
+            <button class="btn btn-primary" @click="saveItem" :disabled="newItem.length === 0">Save Item</button> 
+        </div> 
 
+        <a v-bind:href="newItem">Dynaimc Link</a>
+
+        <p v-if="items.length === 0">No Item, please add a new item</p>
         <ul>
-            <li v-for="item in items" :key="item.id"> {{item.label}}</li>
+            <li v-for="item in items" :key="item.id"> {{item.label}} {{item.priority}}</li>
         </ul>
     </div>
 
@@ -27,11 +36,24 @@
                     header: "Shopping List App",
                     newItem: '',
                     newItemHighPriority: false,
+                    editing: false,
                     items: [
-                        { id: 1, label: "Soda"},
-                        { id: 2, label: "Beer"},
-                        { id: 3, label: "Wine"}
+                        // { id: 1, label: "Soda"},
+                        // { id: 2, label: "Beer"},
+                        // { id: 3, label: "Wine"}
                 ]
+                }
+            },
+            methods: {
+                saveItem() {
+                    if (this.newItem) {
+                        this.items.push({id:this.items.length +1 , label: this.newItem, priority: this.newItemHighPriority})
+                        this.newItem = ''
+                        this.newItemHighPriority = false
+                    }
+                },
+                doEdit(editing) {
+                    this.editing = editing
                 }
             }
         })
