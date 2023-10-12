@@ -8,11 +8,11 @@
 <body>
     <div id="shopping-list">
         <h1>{{header ? header : 'Welcome'}}</h1>
-        <input v-model="header">
+        <input type="text" placeholder="Add an item" v-model="newItem">
+        <button @click="addItem">Add Item</button>
+
         <ul>
-            <li v-for="item in items">
-                {{item}}
-            </li>
+            <li v-for="item in items" :key="item.id"> {{item.label}}</li>
         </ul>
     </div>
 
@@ -21,12 +21,19 @@
         const shoppingList = Vue.createApp({
             data() {
                 return {
-                    header: "Vue Ready to party",
+                    header: "Shopping List App",
+                    newItem: '',
+                    newItemHighPriority: false,
                     items: [
-                        "Soda",
-                        "Beer",
-                        "Wine"
+                        { id: 1, label: "Soda"},
+                        { id: 2, label: "Beer"},
+                        { id: 3, label: "Wine"}
                 ]
+                }
+            },
+            methods : {
+                addItem() {
+                    this.items.push(this.newItem)
                 }
             }
         })
